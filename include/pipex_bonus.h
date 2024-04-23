@@ -6,7 +6,7 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 17:30:52 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/04/23 11:28:30 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/04/23 11:42:48 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	start_pipex(int argc, char **argv, char **env);
 void	parent(int pipefd[2], pid_t pid);
 void	firstChild(int pipefd[2], char *argv, int fd, char **env);
 void    middleChild(int fdW[2], int fdR, char *argv, char **env);
-void	lastChild(int pipefd[2], char **argv, char **env);
+void	lastChild(int pipefd[2], char **argv, char **env, int hereDoc);
 
 char	*get_path(char **env, char *arg);
 char	*find_path(char **path, char *arg);
