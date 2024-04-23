@@ -6,7 +6,7 @@
 #    By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 15:16:19 by elena             #+#    #+#              #
-#    Updated: 2024/04/17 16:52:59 by ejuarros         ###   ########.fr        #
+#    Updated: 2024/04/23 10:20:33 by ejuarros         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,11 @@ BOLD = \033[1m
 
 NAME = pipex
 
+NAME_BONUS = pipex_bonus
+
 SRC_DIR = srcs
+
+SRC_BONUS_DIR = srcs_bonus
 
 BIN_DIR = bin
 
@@ -56,25 +60,44 @@ SRCS =	$(SRC_DIR)/main.c \
 		$(SRC_DIR)/pipex.c \
 		$(SRC_DIR)/pipex_utils.c \
 
+SRCS_BONUS =	$(SRC_BONUS_DIR)/main_bonus.c \
+				$(SRC_BONUS_DIR)/pipex_bonus.c \
+				$(SRC_BONUS_DIR)/pipex_utils_bonus.c \
+				$(SRC_BONUS_DIR)/here_doc_bonus.c \
+
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
+
+OBJS_BONUS = $(SRCS_BONUS:$(SRC_BONUS_DIR)/%.c=$(BIN_DIR)/%.o)
 
 LIBFT = $(LIBFT_DIR)/libft.a
 
 all:	$(NAME) msg
 		@echo " "
 
-$(NAME): $(OBJS) $(LIBFT) $(MLX)
+$(NAME): $(OBJS) $(LIBFT)
 	@echo " "
-	@echo "$(MAGENTA) => MAKE PROGRAM $(DEFAULT)"
+	@echo "$(MAGENTA) => MAKE PIPEX $(DEFAULT)"
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(INCLUDE) -o $(NAME)
 	@echo " "
 	@echo "$(CYAN) $(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(INCLUDE) -o $(NAME) $(DEFAULT)"
 	@echo " "
 
+$(NAME_BONUS): $(OBJS_BONUS) $(LIBFT)
+	@echo " "
+	@echo "$(MAGENTA) => MAKE PIPEX BONUS $(DEFAULT)"
+	@$(CC) $(CFLAGS) $(OBJS_BONUS) $(LIBFT) $(INCLUDE) -o $(NAME_BONUS)
+	@echo " "
+	@echo "$(CYAN) $(CC) $(CFLAGS) $(OBJS_BONUS) $(LIBFT) $(INCLUDE) -o $(NAME_BONUS) $(DEFAULT)"
+	@echo " "
+
 msg:
-	@echo "$(GREEN)==> SO LONG!$(DEFAULT)"
+	@echo "$(GREEN)==> PIPEX!$(DEFAULT)"
 
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.c
+	@echo "   $(YELLOW)Compiling... $< $(DEFAULT)"
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(BIN_DIR)/%.o: $(SRC_BONUS_DIR)/%.c
 	@echo "   $(YELLOW)Compiling... $< $(DEFAULT)"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
@@ -94,11 +117,11 @@ clean:
 	@echo " "
 	@make clean -sC $(LIBFT_DIR)
 	@echo "$(CYAN)Library object files cleaned$(DEFAULT)"
-	@$(REMOVE) $(OBJS)
+	@$(REMOVE) $(OBJS) $(OBJS_BONUS)
 	@echo "$(CYAN)So long object files cleaned$(DEFAULT)"
 
 fclean: clean
-	@$(REMOVE) $(NAME)
+	@$(REMOVE) $(NAME) $(NAME_BONUS)
 	@echo "$(CYAN)So long executable files cleaned!$(DEFAULT)"
 	@make fclean -C $(LIBFT_DIR)
 	@echo "$(CYAN)Library executable files cleaned!$(DEFAULT)"
@@ -106,6 +129,9 @@ fclean: clean
 re: fclean
 	@echo " "
 	@echo "$(GREEN)Cleaned everything for so long!$(DEFAULT)"
-	@$(MAKE) all	
+	@$(MAKE) all
+
+bonus: $(NAME_BONUS) msg
+	@echo " "	
 
 .PHONY: all clean fclean re

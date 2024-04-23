@@ -1,0 +1,174 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/11 11:15:35 by ejuarros          #+#    #+#             */
+/*   Updated: 2024/04/23 11:29:49 by ejuarros         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../include/pipex_bonus.h"
+
+void	start_pipex(int argc, char **argv, char **env)
+{
+	int		o_pipefd[2];
+	int		n_pipefd[2];
+	pid_t	pid;
+	int		fd;
+	int		idx;
+
+	fd = -1;
+	if (ft_strncmp(argv[0], "here_doc", ft_strlen(argv[0])) == 0)
+	{
+		fd = here_doc(argv[1]);
+		argv++;
+		argc--;
+	}
+	idx = 1;
+	if (pipe(o_pipefd) == -1)
+		perror_msg("Pipe error: ");
+	pid = fork();
+	if (pid == -1)
+		perror_msg("Fork error: ");
+	else if (pid == 0)
+	{
+		if (fd < 0)
+			fd = open(argv[0], O_RDONLY);
+		firstChild(o_pipefd, argv[idx], fd, env);
+	}
+	close(o_pipefd[1]);
+	idx++;
+	while (idx < argc - 2)
+	{
+		if (pipe(n_pipefd) == -1)
+			perror_msg("Pipe error: ");
+
+		pid = fork();
+		if (pid == -1)
+			perror_msg("Fork error: ");
+		else if (pid == 0)
+			middleChild(n_pipefd, o_pipefd[0], argv[idx], env);
+		close(o_pipefd[0]);
+		o_pipefd[0] = n_pipefd[0];
+		close(n_pipefd[1]);
+		
+		idx++;
+	}
+	pid = fork();
+	//ft_printf("Index: %d\n", idx);
+	if (pid == -1)
+		perror_msg("Fork error: ");
+	else if (pid == 0)
+		lastChild(o_pipefd, &argv[idx], env);
+	else if (pid > 0)
+		parent(o_pipefd, pid);
+}
+
+void	parent(int pipefd[2], pid_t pid)
+{
+	int	status;
+	int	aux;
+	int waited;
+
+	close(pipefd[0]);
+	//close(pipefd[1]);
+	//printf("{ %d - %d }\n", pipefd[0], pipefd[1]);
+	while (1)
+	{
+		waited = waitpid(-1, &aux, 0);
+		//ft_printf("wait: %d\n", waited);
+		if (waited == -1)
+			break;
+		if (waited == pid)
+			status = aux;
+		//ft_printf("hola\n");
+	}
+	/*aux2 = waitpid(-1, &aux, NULL);
+	while (aux2 != -1) {
+		if (aux2 == pid)
+			status = aux;
+		aux2 = waitpid(-1, &aux, NULL);
+	}*/
+	status = (status >> 8) & 0x0000ff;
+	exit(status);
+}
+
+void	firstChild(int pipefd[2], char *argv, int fd, char **env)
+{
+	char	*c;
+	char	*path;
+	char	**arg;
+
+	close(pipefd[0]);
+	c = ft_strchr(argv, '/');
+	arg = ft_split(argv, ' ');
+	if (c != NULL)
+		path = ft_strdup(argv);
+	else
+		path = get_path(env, arg[0]);
+	if (fd < 0 || !path)
+		perror_msg("Error");
+	if (dup2(fd, STDIN_FILENO) == -1)
+		perror_msg("Dup2 error A: ");
+	close(fd);
+	if (dup2(pipefd[1], STDOUT_FILENO) == -1)
+		perror_msg("Dup2 error B: ");
+	close(pipefd[1]);	
+	execve(path, arg, env);
+	perror_msg("Execve error: ");
+}
+
+void middleChild(int fdW[2], int fdR, char *argv, char **env)
+{
+	char	*c;
+	char	*path;
+	char	**arg;
+
+	close(fdW[0]);
+	c = ft_strchr(argv, '/');
+	arg = ft_split(argv, ' ');
+	if (c != NULL)
+		path = ft_strdup(argv);
+	else
+		path = get_path(env, arg[0]);
+	if (!path)
+		perror_msg("Error");
+	if (dup2(fdR, STDIN_FILENO) == -1)
+		perror_msg("Dup2 error C: ");
+	close(fdR);
+	if (dup2(fdW[1], STDOUT_FILENO) == -1)
+		perror_msg("Dup2 error D: ");
+	close(fdW[1]);
+	execve(path, arg, env);
+	perror_msg("Execve error: ");
+}
+
+void	lastChild(int pipefd[2], char **argv, char **env)
+{
+	char	*c;
+	char	*path;
+	int		fd;
+	char	**arg;
+
+	//close(pipefd[1]);
+	c = ft_strchr(argv[0], '/');
+	arg = ft_split(argv[0], ' ');
+	if (c != NULL)
+		path = ft_strdup(argv[0]);
+	else
+		path = get_path(env, arg[0]);
+	fd = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (fd < 0 || !path)
+		perror_msg("Error");
+	if (dup2(pipefd[0], STDIN_FILENO) == -1)
+		perror_msg("Dup2 error E: ");
+	close(pipefd[0]);
+	if (dup2(fd, STDOUT_FILENO) == -1)
+		perror_msg("Dup2 error F: ");
+	close(fd);
+	execve(path, arg, env);
+	perror_msg("Execve error: ");
+}
