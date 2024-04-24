@@ -6,7 +6,7 @@
 #    By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 15:16:19 by elena             #+#    #+#              #
-#    Updated: 2024/04/23 10:20:33 by ejuarros         ###   ########.fr        #
+#    Updated: 2024/04/24 10:23:01 by ejuarros         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,6 +64,7 @@ SRCS_BONUS =	$(SRC_BONUS_DIR)/main_bonus.c \
 				$(SRC_BONUS_DIR)/pipex_bonus.c \
 				$(SRC_BONUS_DIR)/pipex_utils_bonus.c \
 				$(SRC_BONUS_DIR)/here_doc_bonus.c \
+				$(SRC_BONUS_DIR)/childs_bonus.c
 
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
 
