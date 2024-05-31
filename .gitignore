@@ -1,4 +1,6 @@
-.o
+*.o
+*.a
+*_test*
 pipex
 pipex_bonus
 bin/
