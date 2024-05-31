@@ -19,10 +19,10 @@ void	start_pipex(t_pipex *pipex)
 
 	find_here_doc(pipex, &fd);
 	if (pipe(pipex->pipefd) == -1)
-		perror_msg("Pipe error: ");
+		perror_msg("Pipe error");
 	pid = fork();
 	if (pid == -1)
-		perror_msg("Fork error: ");
+		perror_msg("Fork error");
 	else if (pid == 0)
 	{
 		if (fd < 0)
@@ -34,7 +34,7 @@ void	start_pipex(t_pipex *pipex)
 	middle_loop(pipex);
 	pid = fork();
 	if (pid == -1)
-		perror_msg("Fork error: ");
+		perror_msg("Fork error");
 	else if (pid == 0)
 		last_child(pipex);
 	else if (pid > 0)
@@ -68,10 +68,10 @@ void	middle_loop(t_pipex *pipex)
 	while (pipex->idx < pipex->argc - 2)
 	{
 		if (pipe(n_pipefd) == -1)
-			perror_msg("Pipe error: ");
+			perror_msg("Pipe error");
 		pid = fork();
 		if (pid == -1)
-			perror_msg("Fork error: ");
+			perror_msg("Fork error");
 		else if (pid == 0)
 			middle_child(n_pipefd, pipex->pipefd[0], pipex);
 		close(pipex->pipefd[0]);

@@ -95,10 +95,12 @@ msg:
 	@echo "$(GREEN)==> PIPEX!$(DEFAULT)"
 
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(BIN_DIR)
 	@echo "   $(YELLOW)Compiling... $< $(DEFAULT)"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(BIN_DIR)/%.o: $(SRC_BONUS_DIR)/%.c
+	@mkdir -p $(BIN_DIR)
 	@echo "   $(YELLOW)Compiling... $< $(DEFAULT)"
 	@$(CC) $(CFLAGS) -c $< -o $@
 

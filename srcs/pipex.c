@@ -18,15 +18,15 @@ void	start_pipex(char **argv, char **env)
 	pid_t	pids[2];
 
 	if (pipe(pipefd) == -1)
-		perror_msg("Pipe error: ");
+		perror_msg("Pipe error");
 	pids[0] = fork();
 	if (pids[0] == -1)
-		perror_msg("Fork error: ");
+		perror_msg("Fork error");
 	else if (pids[0] == 0)
 		child_1(pipefd, argv, env);
 	pids[1] = fork();
 	if (pids[1] == -1)
-		perror_msg("Fork error: ");
+		perror_msg("Fork error");
 	else if (pids[1] == 0)
 		child_2(pipefd, argv, env);
 	else if (pids[0] > 0)
@@ -63,13 +63,13 @@ void	child_1(int pipefd[2], char **argv, char **env)
 	if (fd < 0 || !path)
 		perror_msg("Error");
 	if (dup2(fd, STDIN_FILENO) == -1)
-		perror_msg("Dup2 error: ");
+		perror_msg("Dup2 error");
 	close(fd);
 	if (dup2(pipefd[1], STDOUT_FILENO) == -1)
-		perror_msg("Dup2 error: ");
+		perror_msg("Dup2 error");
 	close(pipefd[1]);
 	execve(path, arg, env);
-	perror_msg("Execve error: ");
+	perror_msg("Execve error");
 }
 
 void	child_2(int pipefd[2], char **argv, char **env)
@@ -90,11 +90,11 @@ void	child_2(int pipefd[2], char **argv, char **env)
 	if (fd < 0 || !path)
 		perror_msg("Error");
 	if (dup2(pipefd[0], STDIN_FILENO) == -1)
-		perror_msg("Dup2 error: ");
+		perror_msg("Dup2 error");
 	close(pipefd[0]);
 	if (dup2(fd, STDOUT_FILENO) == -1)
-		perror_msg("Dup2 error: ");
+		perror_msg("Dup2 error");
 	close(fd);
 	execve(path, arg, env);
-	perror_msg("Execve error: ");
+	perror_msg("Execve error");
 }
