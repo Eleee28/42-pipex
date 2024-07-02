@@ -24,15 +24,15 @@ void	first_child(t_pipex *pipex, int fd)
 	else
 		path = get_path(pipex->env, arg[0]);
 	if (fd < 0 || !path)
-		perror_msg("1. Error");
+		perror_msg("Error");
 	if (dup2(fd, STDIN_FILENO) == -1)
-		perror_msg("Dup2 error A: ");
+		perror_msg("Dup2 error");
 	close(fd);
 	if (dup2(pipex->pipefd[1], STDOUT_FILENO) == -1)
-		perror_msg("Dup2 error B: ");
+		perror_msg("Dup2 error");
 	close(pipex->pipefd[1]);
 	execve(path, arg, pipex->env);
-	perror_msg("Execve error: ");
+	perror_msg("Execve error");
 }
 
 void	middle_child(int fdW[2], int fdR, t_pipex *pipex)
@@ -47,15 +47,15 @@ void	middle_child(int fdW[2], int fdR, t_pipex *pipex)
 	else
 		path = get_path(pipex->env, arg[0]);
 	if (!path)
-		perror_msg("2. Error");
+		perror_msg("Error");
 	if (dup2(fdR, STDIN_FILENO) == -1)
-		perror_msg("Dup2 error C: ");
+		perror_msg("Dup2 error");
 	close(fdR);
 	if (dup2(fdW[1], STDOUT_FILENO) == -1)
-		perror_msg("Dup2 error D: ");
+		perror_msg("Dup2 error");
 	close(fdW[1]);
 	execve(path, arg, pipex->env);
-	perror_msg("Execve error: ");
+	perror_msg("Execve error");
 }
 
 void	last_child(t_pipex *pipex)
@@ -75,13 +75,13 @@ void	last_child(t_pipex *pipex)
 	else
 		fd = open(pipex->argv[1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd < 0 || !path)
-		perror_msg("3. Error");
+		perror_msg("Error");
 	if (dup2(pipex->pipefd[0], STDIN_FILENO) == -1)
-		perror_msg("Dup2 error E: ");
+		perror_msg("Dup2 error");
 	close(pipex->pipefd[0]);
 	if (dup2(fd, STDOUT_FILENO) == -1)
-		perror_msg("Dup2 error F: ");
+		perror_msg("Dup2 error");
 	close(fd);
 	execve(path, arg, pipex->env);
-	perror_msg("Execve error: ");
+	perror_msg("Execve error");
 }

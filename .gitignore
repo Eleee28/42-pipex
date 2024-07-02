@@ -1,8 +1,9 @@
-bin/
 *.o
 *.a
-.vscode
+*_test*
 pipex
 pipex_bonus
+bin/
+.vscode
 ls
 del.c

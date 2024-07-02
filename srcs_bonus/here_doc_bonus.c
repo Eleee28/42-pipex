@@ -19,7 +19,7 @@ int	here_doc(char *end)
 
 	end = ft_strjoin(end, "\n");
 	if (pipe(pipefd) == -1)
-		perror_msg("Pipe error: ");
+		perror_msg("Pipe error");
 	line = get_next_line(0);
 	while (line && ft_strncmp(line, end, ft_strlen(line)) != 0)
 	{

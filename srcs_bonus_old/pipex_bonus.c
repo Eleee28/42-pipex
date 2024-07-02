@@ -32,10 +32,10 @@ void	start_pipex(int argc, char **argv, char **env)
 	}
 	idx = 1;
 	if (pipe(o_pipefd) == -1)
-		perror_msg("Pipe error: ");
+		perror_msg("Pipe error");
 	pid = fork();
 	if (pid == -1)
-		perror_msg("Fork error: ");
+		perror_msg("Fork error");
 	else if (pid == 0)
 	{
 		if (fd < 0)
@@ -47,11 +47,11 @@ void	start_pipex(int argc, char **argv, char **env)
 	while (idx < argc - 2)
 	{
 		if (pipe(n_pipefd) == -1)
-			perror_msg("Pipe error: ");
+			perror_msg("Pipe error");
 
 		pid = fork();
 		if (pid == -1)
-			perror_msg("Fork error: ");
+			perror_msg("Fork error");
 		else if (pid == 0)
 			middleChild(n_pipefd, o_pipefd[0], argv[idx], env);
 		close(o_pipefd[0]);
@@ -63,7 +63,7 @@ void	start_pipex(int argc, char **argv, char **env)
 	pid = fork();
 	//ft_printf("Index: %d\n", idx);
 	if (pid == -1)
-		perror_msg("Fork error: ");
+		perror_msg("Fork error");
 	else if (pid == 0)
 		lastChild(o_pipefd, &argv[idx], env, hereDoc);
 	else if (pid > 0)
@@ -105,13 +105,13 @@ void	firstChild(int pipefd[2], char *argv, int fd, char **env)
 	if (fd < 0 || !path)
 		perror_msg("Error");
 	if (dup2(fd, STDIN_FILENO) == -1)
-		perror_msg("Dup2 error A: ");
+		perror_msg("Dup2 error");
 	close(fd);
 	if (dup2(pipefd[1], STDOUT_FILENO) == -1)
-		perror_msg("Dup2 error B: ");
+		perror_msg("Dup2 error");
 	close(pipefd[1]);	
 	execve(path, arg, env);
-	perror_msg("Execve error: ");
+	perror_msg("Execve error");
 }
 
 void middleChild(int fdW[2], int fdR, char *argv, char **env)
@@ -130,13 +130,13 @@ void middleChild(int fdW[2], int fdR, char *argv, char **env)
 	if (!path)
 		perror_msg("Error");
 	if (dup2(fdR, STDIN_FILENO) == -1)
-		perror_msg("Dup2 error C: ");
+		perror_msg("Dup2 error");
 	close(fdR);
 	if (dup2(fdW[1], STDOUT_FILENO) == -1)
-		perror_msg("Dup2 error D: ");
+		perror_msg("Dup2 error");
 	close(fdW[1]);
 	execve(path, arg, env);
-	perror_msg("Execve error: ");
+	perror_msg("Execve error");
 }
 
 void	lastChild(int pipefd[2], char **argv, char **env, int hereDoc)
@@ -160,10 +160,10 @@ void	lastChild(int pipefd[2], char **argv, char **env, int hereDoc)
 	if (fd < 0 || !path)
 		perror_msg("Error");
 	if (dup2(pipefd[0], STDIN_FILENO) == -1)
-		perror_msg("Dup2 error E: ");
+		perror_msg("Dup2 error");
 	close(pipefd[0]);
 	if (dup2(fd, STDOUT_FILENO) == -1)
-		perror_msg("Dup2 error F: ");
+		perror_msg("Dup2 error");
 	close(fd);
 
 	/*________________________________________________________*/
@@ -181,5 +181,5 @@ void	lastChild(int pipefd[2], char **argv, char **env, int hereDoc)
 
 
 	execve(path, arg, env);
-	perror_msg("Execve error: ");
+	perror_msg("Execve error");
 }

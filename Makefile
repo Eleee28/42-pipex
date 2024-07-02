@@ -6,7 +6,7 @@
 #    By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 15:16:19 by elena             #+#    #+#              #
-#    Updated: 2024/07/02 22:24:00 by ejuarros         ###   ########.fr        #
+#    Updated: 2024/07/02 22:31:06 by ejuarros         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,10 +24,6 @@ NAME 		= pipex
 # Bonus executable
 NAME_BONUS 	= pipex_bonus
 
-#SRC_DIR = srcs
-
-#SRC_BONUS_DIR = srcs_bonus
-
 # Library directory
 LIB_DIR		= library
 
@@ -36,8 +32,6 @@ BIN_DIR 	= bin
 
 # Temporary file for traking compilation
 TMP			= $(BIN_DIR)/.tmp
-
-#LIBFT_DIR = library
 
 ################################################################################
 
@@ -50,8 +44,6 @@ REMOVE	:= rm -rf
 
 # Make flags
 MAKEFLAGS	+= -s
-
-#LIB = ar -crs
 
 INCLUDE 	= -Ilibrary
 
