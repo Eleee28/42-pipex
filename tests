@@ -1,0 +1,13 @@
+./pipex /dev/stdin ls cat /dev/stdout
+
+env -i ./pipex /dev/stdin ls cat /dev/stdout
+
+crear fichero ./ls con return 23
+
+./pipex /dev/stdin cat cat cat ls /dev/stdout
+
+./pipex /dev/stdin here_doc end cat cat cat /dev/stdout
+
+./pipex /dev/stdin " ls" cat /dev/stdout
+
+./pipex /dev/stdin ls "wc -l" /dev/stdout

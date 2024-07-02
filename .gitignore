@@ -1,0 +1,8 @@
+bin/
+*.o
+*.a
+.vscode
+pipex
+pipex_bonus
+ls
+del.c

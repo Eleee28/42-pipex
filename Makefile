@@ -6,133 +6,151 @@
 #    By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 15:16:19 by elena             #+#    #+#              #
-#    Updated: 2024/04/24 10:23:01 by ejuarros         ###   ########.fr        #
+#    Updated: 2024/07/02 22:24:00 by ejuarros         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# COLOR CODES
+#################################### COLORS ####################################
+DEFAULT	= \033[0m
+GREEN	= \033[92m
+YELLOW	= \033[93m
+MAGENTA	= \033[95m
+CYAN	= \033[96m
+################################## VARIABLES ###################################
 
-DEFAULT = \033[0m
+# Mandatory executable
+NAME 		= pipex
 
-GREEN = \033[92m
+# Bonus executable
+NAME_BONUS 	= pipex_bonus
 
-RED = \033[91m
+#SRC_DIR = srcs
 
-YELLOW = \033[93m
+#SRC_BONUS_DIR = srcs_bonus
 
-BLUE = \033[36m
+# Library directory
+LIB_DIR		= library
 
-MAGENTA = \033[95m
+# Objects directory
+BIN_DIR 	= bin
 
-CYAN = \033[96m
+# Temporary file for traking compilation
+TMP			= $(BIN_DIR)/.tmp
 
-GRAY = \033[90m
+#LIBFT_DIR = library
 
-BOLD = \033[1m
+################################################################################
 
-# VARIABLES
+# Compilation variables
+CC		:= cc
+CFLAGS	:= -Wall -Werror -Wextra
 
-NAME = pipex
+# Remove flags
+REMOVE	:= rm -rf
 
-NAME_BONUS = pipex_bonus
+# Make flags
+MAKEFLAGS	+= -s
 
-SRC_DIR = srcs
+#LIB = ar -crs
 
-SRC_BONUS_DIR = srcs_bonus
+INCLUDE 	= -Ilibrary
 
-BIN_DIR = bin
+################################################################################
 
-LIBFT_DIR = library
+# Possible source files path
+VPATH = srcs:srcs_bonus
 
-CC = cc
+# Library file
+LIB = $(LIB_DIR)/libft.a
 
-CFLAGS += -Wall -Werror -Wextra -g3
+# Source files
+SRCS =	main.c \
+		pipex.c \
+		pipex_utils.c \
 
-REMOVE = rm -f
+SRCS_BONUS =	main_bonus.c \
+				pipex_bonus.c \
+				pipex_utils_bonus.c \
+				here_doc_bonus.c \
+				childs_bonus.c
 
-LIB = ar -crs
+# Object files
+OBJS = $(SRCS:%.c=$(BIN_DIR)/%.o)
+OBJS_BONUS = $(SRCS_BONUS:%.c=$(BIN_DIR)/%.o)
 
-INCLUDE = -Ilibrary
+################################################################################
 
-# SOURCES
-
-SRCS =	$(SRC_DIR)/main.c \
-		$(SRC_DIR)/pipex.c \
-		$(SRC_DIR)/pipex_utils.c \
-
-SRCS_BONUS =	$(SRC_BONUS_DIR)/main_bonus.c \
-				$(SRC_BONUS_DIR)/pipex_bonus.c \
-				$(SRC_BONUS_DIR)/pipex_utils_bonus.c \
-				$(SRC_BONUS_DIR)/here_doc_bonus.c \
-				$(SRC_BONUS_DIR)/childs_bonus.c
-
-OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
-
-OBJS_BONUS = $(SRCS_BONUS:$(SRC_BONUS_DIR)/%.c=$(BIN_DIR)/%.o)
-
-LIBFT = $(LIBFT_DIR)/libft.a
-
+# Main rule
 all:	$(NAME) msg
-		@echo " "
+		@echo
 
-$(NAME): $(OBJS) $(LIBFT)
-	@echo " "
-	@echo "$(MAGENTA) => MAKE PIPEX $(DEFAULT)"
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(INCLUDE) -o $(NAME)
-	@echo " "
-	@echo "$(CYAN) $(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(INCLUDE) -o $(NAME) $(DEFAULT)"
-	@echo " "
+# Pipex compilation
+$(NAME): $(LIB) $(OBJS)
+	@rm -rf $(TMP)
+	@echo
+	@$(CC) $(OBJS) $(LIB) $(INCLUDE) -o $(NAME)
 
-$(NAME_BONUS): $(OBJS_BONUS) $(LIBFT)
-	@echo " "
-	@echo "$(MAGENTA) => MAKE PIPEX BONUS $(DEFAULT)"
-	@$(CC) $(CFLAGS) $(OBJS_BONUS) $(LIBFT) $(INCLUDE) -o $(NAME_BONUS)
-	@echo " "
-	@echo "$(CYAN) $(CC) $(CFLAGS) $(OBJS_BONUS) $(LIBFT) $(INCLUDE) -o $(NAME_BONUS) $(DEFAULT)"
-	@echo " "
+# Objects compilation
+$(BIN_DIR)/%.o: %.c
+	@mkdir -p $(BIN_DIR)
+	@if [ ! -e $(TMP) ]; then \
+		touch $(TMP); \
+		echo "$(MAGENTA)🔶 MAKE PROGRAM 🔶$(DEFAULT)\n"; \
+	fi
+	@echo -n "\033[2K\r🔍 $(YELLOW)Compiling... $< $(DEFAULT)"
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+# Library compilation
+$(LIB): 
+	@echo
+	@echo "$(MAGENTA)🔶 MAKE LIBS 🔶$(DEFAULT)"
+	@echo
+	@make -C $(LIB_DIR)
+
+################################################################################
+
+bonus: $(NAME_BONUS) msg_bonus
+	@echo
+
+$(NAME_BONUS): $(LIB) $(OBJS_BONUS)
+	@$(CC) $(OBJS_BONUS) $(LIB) $(INCLUDE) -o $(NAME_BONUS)
+	@echo
+
+################################################################################
+
+aux_clean:
+	@$(REMOVE) $(OBJS) $(OBJS_BONUS) $(BIN_DIR)
+	@echo "$(CYAN)Pipex object files cleaned$(DEFAULT)"
+
+clean: msg_clean
+	@make clean -C $(LIB_DIR)
+	@make aux_clean
+	@echo
+
+fclean: msg_clean aux_clean
+	@$(REMOVE) $(NAME) $(NAME_BONUS)
+	@echo "$(CYAN)Pipex executable files cleaned!$(DEFAULT)"
+	@echo
+	@make fclean -C $(LIB_DIR)
+
+re: fclean
+	@echo "$(GREEN)Cleaned everything for pipex!$(DEFAULT)"
+	@make all
+
+################################################################################
 
 msg:
-	@echo "$(GREEN)==> PIPEX!$(DEFAULT)"
+	@echo
+	@echo "$(GREEN)✨ PIPEX!$(DEFAULT)"
 
-$(BIN_DIR)/%.o: $(SRC_DIR)/%.c
-	@echo "   $(YELLOW)Compiling... $< $(DEFAULT)"
-	@$(CC) $(CFLAGS) -c $< -o $@
+msg_bonus:
+	@echo
+	@echo "$(GREEN)✨ PIPEX BONUS!$(DEFAULT)"
 
-$(BIN_DIR)/%.o: $(SRC_BONUS_DIR)/%.c
-	@echo "   $(YELLOW)Compiling... $< $(DEFAULT)"
-	@$(CC) $(CFLAGS) -c $< -o $@
+msg_clean:
+	@echo
+	@echo "$(MAGENTA)🔶 CLEAN 🔶$(DEFAULT)"
+	@echo
 
-$(LIBFT): 
-	@echo " "
-	@echo "$(MAGENTA) => MAKE LIBS $(DEFAULT)"
-	@echo " "
-	@echo "$(GREEN)Libft lib...$(DEFAULT)"
-	@$(MAKE) -sC $(LIBFT_DIR)
-	@echo " "
-	@make -sC $(LIBFT_DIR)
-	@echo "$(GREEN)Library compiled!$(DEFAULT)"
-
-clean:
-	@echo " "
-	@echo "$(MAGENTA)=> CLEAN $(DEFAULT)"
-	@echo " "
-	@make clean -sC $(LIBFT_DIR)
-	@echo "$(CYAN)Library object files cleaned$(DEFAULT)"
-	@$(REMOVE) $(OBJS) $(OBJS_BONUS)
-	@echo "$(CYAN)So long object files cleaned$(DEFAULT)"
-
-fclean: clean
-	@$(REMOVE) $(NAME) $(NAME_BONUS)
-	@echo "$(CYAN)So long executable files cleaned!$(DEFAULT)"
-	@make fclean -C $(LIBFT_DIR)
-	@echo "$(CYAN)Library executable files cleaned!$(DEFAULT)"
-	
-re: fclean
-	@echo " "
-	@echo "$(GREEN)Cleaned everything for so long!$(DEFAULT)"
-	@$(MAKE) all
-
-bonus: $(NAME_BONUS) msg
-	@echo " "	
-
-.PHONY: all clean fclean re
+################################################################################
+.PHONY: all bonus aux_clean clean fclean re msg msg_bonus msg_clean
