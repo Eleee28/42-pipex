@@ -6,7 +6,7 @@
 #    By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 15:16:19 by elena             #+#    #+#              #
-#    Updated: 2024/07/02 22:31:06 by ejuarros         ###   ########.fr        #
+#    Updated: 2024/07/03 12:31:55 by ejuarros         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ TMP			= $(BIN_DIR)/.tmp
 
 # Compilation variables
 CC		:= cc
-CFLAGS	:= -Wall -Werror -Wextra
+CFLAGS	:= -Wall -Werror -Wextra -g3
 
 # Remove flags
 REMOVE	:= rm -rf

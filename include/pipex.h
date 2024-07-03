@@ -6,7 +6,7 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 17:30:52 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/04/22 14:11:41 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/03 12:42:55 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,14 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
+
+typedef struct s_pipex
+{
+	int		argc;
+	char	**argv;
+	char	**env;
+	int		pipefd[2];
+}			t_pipex;
 
 void	start_pipex(char **argv, char **env);
 

@@ -6,7 +6,7 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 11:15:35 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/04/22 14:11:48 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/03 12:54:27 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ void	child_1(int pipefd[2], char **argv, char **env)
 		path = get_path(env, arg[0]);
 	fd = open(argv[0], O_RDONLY);
 	if (fd < 0 || !path)
+	{
+		close(pipefd[1]);
 		perror_msg("Error");
+	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 		perror_msg("Dup2 error");
 	close(fd);
@@ -88,7 +91,10 @@ void	child_2(int pipefd[2], char **argv, char **env)
 		path = get_path(env, arg[0]);
 	fd = open(argv[3], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd < 0 || !path)
+	{
+		close(pipefd[0]);
 		perror_msg("Error");
+	}
 	if (dup2(pipefd[0], STDIN_FILENO) == -1)
 		perror_msg("Dup2 error");
 	close(pipefd[0]);

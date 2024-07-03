@@ -6,7 +6,7 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 11:15:35 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/04/24 10:15:27 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/03 12:39:57 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ void	start_pipex(t_pipex *pipex)
 			fd = open(pipex->argv[0], O_RDONLY);
 		first_child(pipex, fd);
 	}
+	if (fd > 0)
+		close(fd);
 	close(pipex->pipefd[1]);
 	pipex->idx++;
 	middle_loop(pipex);

@@ -6,7 +6,7 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:15:51 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/04/24 11:33:21 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/03 12:35:48 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ void	first_child(t_pipex *pipex, int fd)
 	else
 		path = get_path(pipex->env, arg[0]);
 	if (fd < 0 || !path)
+	{
+		close(pipex->pipefd[1]);
 		perror_msg("Error");
+	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 		perror_msg("Dup2 error");
 	close(fd);
@@ -75,7 +78,10 @@ void	last_child(t_pipex *pipex)
 	else
 		fd = open(pipex->argv[1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd < 0 || !path)
+	{
+		close(pipex->pipefd[0]);
 		perror_msg("Error");
+	}
 	if (dup2(pipex->pipefd[0], STDIN_FILENO) == -1)
 		perror_msg("Dup2 error");
 	close(pipex->pipefd[0]);
