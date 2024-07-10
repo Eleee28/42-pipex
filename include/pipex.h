@@ -6,7 +6,7 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 17:30:52 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/07/03 12:42:55 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/10 13:25:42 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,22 +23,66 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-typedef struct s_pipex
-{
-	int		argc;
-	char	**argv;
-	char	**env;
-	int		pipefd[2];
-}			t_pipex;
+/********************************************************/
+/*					   PIPEX							*/
+/********************************************************/
 
+/** @brief Start pipex function
+ *  
+ *  @param argv command line arguments
+ *  @param env environment variables
+*/
 void	start_pipex(char **argv, char **env);
 
+/** @brief parent routine
+ * 
+ *  @param pipefd pipe file descriptors
+ *  @param pids pids (process IDs) of the children
+*/
 void	parent(int pipefd[2], pid_t pids[2]);
+
+/** @brief child1 routine
+ * 
+ *  @param pipefd pipe file descriptor
+ *  @param argv arguments
+ *  @param env environment variables
+*/
 void	child_1(int pipefd[2], char **argv, char **env);
+
+/** @brief child2 routine
+ * 
+ *  @param pipefd pipe file descriptor
+ *  @param argv arguments
+ *  @param env environment variables
+*/
 void	child_2(int pipefd[2], char **argv, char **env);
 
+/********************************************************/
+/*					    UTILS							*/
+/********************************************************/
+
+/** @brief get path from environment variables
+ * 
+ *  @param env environment variables
+ *  @param arg argument
+ * 
+ *  @return path
+*/
 char	*get_path(char **env, char *arg);
+
+/** @brief find path on system
+ * 
+ *  @param path directory paths
+ *  @param arg argument
+ * 
+ *  @return path
+*/
 char	*find_path(char **path, char *arg);
+
+/** @brief print error message and exit
+ * 
+ *  @param msg error message to print
+*/
 void	perror_msg(char *msg);
 
 #endif

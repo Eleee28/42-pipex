@@ -6,12 +6,20 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 11:15:35 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/07/10 10:50:42 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/10 13:40:28 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
+/** @details Whenever an error arises print error and exit
+ * 		- create the pipe for communication
+ * 		- create the fork for child1
+ * 		- create the fork for child2
+ * 
+ * 		pipefd[0] --> read end
+ * 		pipefd[1] --> write end
+ */
 void	start_pipex(char **argv, char **env)
 {
 	int		pipefd[2];
@@ -33,6 +41,10 @@ void	start_pipex(char **argv, char **env)
 		parent(pipefd, pids);
 }
 
+/** @details close all pipefds and wait for both childs to end.
+ *  Set status to the one of the last child.
+ * 	 Operation same as WEXITSTATUS(status)
+ */
 void	parent(int pipefd[2], pid_t pids[2])
 {
 	int	status;
@@ -45,6 +57,13 @@ void	parent(int pipefd[2], pid_t pids[2])
 	exit(status);
 }
 
+/** @brief duplicate file descriptors safely
+ * 	
+ * 	@details duplicate and close fds. Handle all possible errors.
+ * 
+ * 	@param in_fd input file descriptor
+ *  @param out_fd output file descriptor
+*/
 static void	dup_fds(int in_fd, int out_fd)
 {
 	int	error;
@@ -68,6 +87,10 @@ static void	dup_fds(int in_fd, int out_fd)
 	close(out_fd);
 }
 
+/** @details child 1 is only going to write on the pipe, so we close the
+ *  read end. We split argv using spaces as delimiter and obtain the path
+ *  When we have all the info required, execute the command using execve.
+ */
 void	child_1(int pipefd[2], char **argv, char **env)
 {
 	char	*path;
@@ -96,6 +119,10 @@ void	child_1(int pipefd[2], char **argv, char **env)
 	perror_msg("Execve error");
 }
 
+/** @details child 2 is only going to read from the pipe, so we close the
+ *  write end. We split argv using spaces as delimiter and obtain the path
+ *  When we have all the info required, execute the command using execve.
+ */
 void	child_2(int pipefd[2], char **argv, char **env)
 {
 	char	*path;

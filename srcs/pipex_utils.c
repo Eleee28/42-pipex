@@ -6,12 +6,15 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 11:38:38 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/07/10 10:25:27 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/10 13:44:10 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
+/** @details search for "PATH=" in the env variables and split the result
+ *  using ':' as delimiter.
+*/
 char	*get_path(char **env, char *arg)
 {
 	int		i;
@@ -28,6 +31,8 @@ char	*get_path(char **env, char *arg)
 	return (find_path(path, arg));
 }
 
+/** @details find the first path that can be accessed with the arg in the path
+ */
 char	*find_path(char **path, char *arg)
 {
 	char	*aux1;
@@ -54,6 +59,9 @@ char	*find_path(char **path, char *arg)
 	return (arg);
 }
 
+/** @details call perror to print the error message stored in errno along with
+ * 	msg. Exit the program.
+*/
 void	perror_msg(char *msg)
 {
 	perror(msg);
