@@ -6,7 +6,7 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 11:38:38 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/04/22 14:01:01 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/10 10:25:27 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,10 @@ char	*find_path(char **path, char *arg)
 		free(aux2);
 		i++;
 	}
+	if (path)
+		arg = 0;
 	ft_free_matrix(path);
-	return (0);
+	return (arg);
 }
 
 void	perror_msg(char *msg)

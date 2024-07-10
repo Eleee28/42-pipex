@@ -6,7 +6,7 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 11:15:35 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/07/03 12:54:27 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/10 10:50:42 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,62 +45,81 @@ void	parent(int pipefd[2], pid_t pids[2])
 	exit(status);
 }
 
+static void	dup_fds(int in_fd, int out_fd)
+{
+	int	error;
+
+	if (dup2(in_fd, STDIN_FILENO) == -1)
+	{
+		error = errno;
+		close(in_fd);
+		close(out_fd);
+		errno = error;
+		perror_msg("Dup2 error");
+	}
+	close(in_fd);
+	if (dup2(out_fd, STDOUT_FILENO) == -1)
+	{
+		error = errno;
+		close(out_fd);
+		errno = error;
+		perror_msg("Dup2 error");
+	}
+	close(out_fd);
+}
+
 void	child_1(int pipefd[2], char **argv, char **env)
 {
-	char	*c;
 	char	*path;
 	int		fd;
 	char	**arg;
+	int		error;
 
 	close(pipefd[0]);
-	c = ft_strchr(argv[1], '/');
 	arg = ft_split(argv[1], ' ');
-	if (c != NULL)
-		path = ft_strdup(argv[1]);
+	if (ft_strchr(argv[1], '/') != NULL)
+		path = ft_strdup(arg[0]);
 	else
 		path = get_path(env, arg[0]);
 	fd = open(argv[0], O_RDONLY);
 	if (fd < 0 || !path)
 	{
+		error = errno;
 		close(pipefd[1]);
+		if (fd > 0)
+			close(fd);
+		errno = error;
 		perror_msg("Error");
 	}
-	if (dup2(fd, STDIN_FILENO) == -1)
-		perror_msg("Dup2 error");
-	close(fd);
-	if (dup2(pipefd[1], STDOUT_FILENO) == -1)
-		perror_msg("Dup2 error");
-	close(pipefd[1]);
+	dup_fds(fd, pipefd[1]);
 	execve(path, arg, env);
 	perror_msg("Execve error");
 }
 
 void	child_2(int pipefd[2], char **argv, char **env)
 {
-	char	*c;
 	char	*path;
 	int		fd;
 	char	**arg;
+	int		error;
 
 	close(pipefd[1]);
-	c = ft_strchr(argv[2], '/');
 	arg = ft_split(argv[2], ' ');
-	if (c != NULL)
-		path = ft_strdup(argv[2]);
+	if (ft_strchr(argv[2], '/') != NULL)
+		path = ft_strdup(arg[0]);
 	else
 		path = get_path(env, arg[0]);
 	fd = open(argv[3], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd < 0 || !path)
 	{
+		error = errno;
 		close(pipefd[0]);
+		if (fd > 0)
+			close(fd);
+		errno = error;
 		perror_msg("Error");
 	}
-	if (dup2(pipefd[0], STDIN_FILENO) == -1)
-		perror_msg("Dup2 error");
-	close(pipefd[0]);
-	if (dup2(fd, STDOUT_FILENO) == -1)
-		perror_msg("Dup2 error");
-	close(fd);
+	dup_fds(pipefd[0], fd);
 	execve(path, arg, env);
 	perror_msg("Execve error");
 }

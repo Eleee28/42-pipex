@@ -6,24 +6,32 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 11:15:35 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/07/03 12:39:57 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/10 10:32:44 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
+
+static int	start(t_pipex *pipex, int *fd)
+{
+	int	pid;
+
+	find_here_doc(pipex, fd);
+	if (pipe(pipex->pipefd) == -1)
+		perror_msg("Pipe error");
+	pid = fork();
+	if (pid == -1)
+		perror_msg("Fork error");
+	return (pid);
+}
 
 void	start_pipex(t_pipex *pipex)
 {
 	pid_t	pid;
 	int		fd;
 
-	find_here_doc(pipex, &fd);
-	if (pipe(pipex->pipefd) == -1)
-		perror_msg("Pipe error");
-	pid = fork();
-	if (pid == -1)
-		perror_msg("Fork error");
-	else if (pid == 0)
+	pid = start(pipex, &fd);
+	if (pid == 0)
 	{
 		if (fd < 0)
 			fd = open(pipex->argv[0], O_RDONLY);
