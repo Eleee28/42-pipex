@@ -39,6 +39,9 @@ To manage child processes, you often need to wait for them to finish executing.
 - `wait()` : This function makes the parent wait until any of its child processes have finished executing.
 - `waitpid()` : This function allows you to wait for a specific child process to finish.
 
+&nbsp;
+
+```
     Parent Process (PID: 1000)
     |
     +--- fork() ---> Child Process 1 (PID: 1001)
@@ -48,6 +51,7 @@ To manage child processes, you often need to wait for them to finish executing.
     +--- fork() ---> Child Process 2 (PID: 1002)
                          |
                          +--- pipe2 (Parent to Child 2)
+```
 
 Legend:
 
