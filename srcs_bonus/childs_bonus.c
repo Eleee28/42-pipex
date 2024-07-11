@@ -6,12 +6,19 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:15:51 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/07/10 10:51:16 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/11 10:59:35 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 
+/** @brief duplicate file descriptors safely
+ * 	
+ * 	@details duplicate and close fds. Handle all possible errors.
+ * 
+ * 	@param in_fd input file descriptor
+ *  @param out_fd output file descriptor
+*/
 static void	dup_fds(int in_fd, int out_fd)
 {
 	int	error;
@@ -35,6 +42,10 @@ static void	dup_fds(int in_fd, int out_fd)
 	close(out_fd);
 }
 
+/** @details first child is only going to write on the pipe, so we close the
+ *  read end. We split argv using spaces as delimiter and obtain the path
+ *  When we have all the info required, execute the command using execve.
+ */
 void	first_child(t_pipex *pipex, int fd)
 {
 	char	*path;
@@ -61,6 +72,11 @@ void	first_child(t_pipex *pipex, int fd)
 	perror_msg("Execve error");
 }
 
+/** @details middle child is going to write on the fdW, so we close the
+ *  read end, and it is going to read from the fdR. We split argv using
+ *  spaces as delimiter and obtain the path.
+ *  When we have all the info required, execute the command using execve.
+ */
 void	middle_child(int fdW[2], int fdR, t_pipex *pipex)
 {
 	char	*path;
@@ -83,6 +99,14 @@ void	middle_child(int fdW[2], int fdR, t_pipex *pipex)
 	perror_msg("Execve error");
 }
 
+/** @brief open file descriptor
+ * 
+ * @details open the file on a different mode depending on if there is a 
+ * heredoc or not
+ * 
+ * @param pipex pipex structure
+ * @param fd file descriptor
+*/
 static void	fd_open(t_pipex *pipex, int *fd)
 {
 	if (pipex->heredoc)
@@ -91,6 +115,10 @@ static void	fd_open(t_pipex *pipex, int *fd)
 		(*fd) = open(pipex->argv[1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 }
 
+/** @details last child is only going to read from the pipe, so we close the
+ *  write end. We split argv using spaces as delimiter and obtain the path
+ *  When we have all the info required, execute the command using execve.
+ */
 void	last_child(t_pipex *pipex)
 {
 	char	*path;

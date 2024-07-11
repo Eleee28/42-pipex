@@ -6,7 +6,7 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 17:30:52 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/07/10 13:25:42 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/10 13:58:45 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 /*					   PIPEX							*/
 /********************************************************/
 
-/** @brief Start pipex function
+/** @brief start pipex function
  *  
  *  @param argv command line arguments
  *  @param env environment variables

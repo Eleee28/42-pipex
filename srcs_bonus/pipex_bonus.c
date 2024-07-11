@@ -6,12 +6,21 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 11:15:35 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/07/10 10:32:44 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/10 14:06:23 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 
+/** @brief Start pipex finding heredoc
+ * 
+ *  @details find heredoc, initialize pipefd and fork first child.
+ * 
+ * @param pipex pipex structure
+ * @param fd file descriptor
+ * 
+ * @return pid of the fork
+*/
 static int	start(t_pipex *pipex, int *fd)
 {
 	int	pid;
@@ -25,6 +34,9 @@ static int	start(t_pipex *pipex, int *fd)
 	return (pid);
 }
 
+/** @details depending on pid, call the corresponding function for
+ *  each process
+*/
 void	start_pipex(t_pipex *pipex)
 {
 	pid_t	pid;
@@ -51,6 +63,9 @@ void	start_pipex(t_pipex *pipex)
 		parent(pipex->pipefd, pid);
 }
 
+/** @details close read end of pipe, wait till all processes are finished.
+ *  Exit program with status.
+*/
 void	parent(int pipefd[2], pid_t pid)
 {
 	int	status;
@@ -70,6 +85,9 @@ void	parent(int pipefd[2], pid_t pid)
 	exit(status);
 }
 
+/** @details for each needed children, create a pipe and a fork and increment
+ *  pipex index.
+*/
 void	middle_loop(t_pipex *pipex)
 {
 	int		n_pipefd[2];

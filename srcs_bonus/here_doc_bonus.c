@@ -6,12 +6,15 @@
 /*   By: ejuarros <ejuarros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:48:48 by ejuarros          #+#    #+#             */
-/*   Updated: 2024/04/24 10:21:33 by ejuarros         ###   ########.fr       */
+/*   Updated: 2024/07/11 10:43:59 by ejuarros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 
+/** @details Create a pipe and read until the delimiter (end) is found
+ *  writing the read info on the pipe.
+*/
 int	here_doc(char *end)
 {
 	char	*line;
@@ -34,6 +37,8 @@ int	here_doc(char *end)
 	return (pipefd[0]);
 }
 
+/** @details If there is a here doc perform its action and turn the flag to 1 
+*/
 void	find_here_doc(t_pipex *pipex, int *fd)
 {
 	pipex->heredoc = 0;
