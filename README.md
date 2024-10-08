@@ -1,4 +1,12 @@
-# 42_pipex
+<p align="center">
+    <img src="https://github.com/ayogun/42-project-badges/blob/main/badges/pipexm.png" alt="pipex badge">
+</p>
+
+<h1 align="center">
+    42 Pipex
+</h1>
+
+<!-- # 42_pipex -->
 
 Statement of the project (in [Spanish](es.subject.pdf) / [English](en.subject.pdf))
 
